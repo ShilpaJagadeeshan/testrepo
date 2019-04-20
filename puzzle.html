@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head><title>Hangman</title>
+  </head>
+  <body>
+    <div class="wrapper">
+   <h1>Word Puzzle</h1>
+    <h2>Use the alphabet below to guess the word, or click hint to get a clue. </h2>
+</div>
+<div class="wrapper">
+    <div id="buttons">
+    </div>
+      <p id="catagoryName"></p>
+      <div id="hold">
+      </div>
+    <p id="mylives"></p>
+    <p id="clue">Clue -</p>
+
+    <div class="container">
+      <button id="hint">Hint</button>
+      <button id="reset">Play again</button>
+    </div>
+</div>
+
+
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <style>
+
+    body {
+      background: white;
+      font-family: sans-serif;
+      color:$white;
+      height:100%;
+      text-align:center;
+      font-size:18px;
+    }
+
+    .wrappper{
+      @include clear;
+      width:100%;
+      margin:auto;
+    }
+
+
+
+
+    h1, h2{
+    	font-family: 'Roboto', sans-serif;
+    	font-weight: 100;
+    	text-transform: uppercase;
+       margin:5px 0;
+    }
+
+
+
+    #alphabet {
+
+      margin:15px auto;
+      padding:0;
+      max-width:900px;
+    }
+
+    #alphabet li {
+      float:left;
+      margin: 0 10px 10px 0;
+      list-style:none;
+      width:35px;
+      height:30px;
+      padding-top:10px;
+      background:white;
+      color: base-color;
+      cursor:pointer;
+      @include corners(5px);
+      border: solid 1px $white;
+
+        &:hover{
+          border: solid 1px white;
+          color:grey;
+        }
+    }
+#catagoryName  {
+  position: center;
+  display: inline-block;
+  padding: 10px 10px;
+  font-size:2.0em;
+}
+
+    #my-word li {
+      position: center;
+      margin: 10;
+      display: inline-block;
+      padding: 0 10px;
+      font-size:2.0em;
+    }
+
+
+
+
+    button{
+      border: solid 1px;
+      font-size:1.2em;
+      padding:18px 10px;
+      width:180px;
+      margin: 10px;
+
+
+        &:hover{
+
+          background:white;
+          border: solid 1px;
+
+        }
+    }
+
+
+
+
+    </style>
+
+
+
+
+
+<script>
+window.onload = function () {
+
+var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+  'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+  't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+var categories;         // Array of topics
+var chosenCategory;     // Selected catagory
+var getHint ;          // Word getHint
+var word ;              // Selected word
+var guess ;             // Geuss
+var geusses = [ ];      // Stored geusses
+var lives ;             // Lives
+var counter ;           // Count correct geusses
+var space;              // Number of spaces in word '-'
+
+// Get elements
+var showLives = document.getElementById("mylives");
+var showCatagory = document.getElementById("scatagory");
+var getHint = document.getElementById("hint");
+var showClue = document.getElementById("clue");
+
+
+
+// create alphabet ul
+var buttons = function () {
+myButtons = document.getElementById('buttons');
+letters = document.createElement('ul');
+
+for (var i = 0; i < alphabet.length; i++) {
+letters.id = 'alphabet';
+list = document.createElement('li');
+list.id = 'letter';
+list.innerHTML = alphabet[i];
+check();
+myButtons.appendChild(letters);
+letters.appendChild(list);
+}
+}
+
+
+// Select Catagory
+var selectCat = function () {
+if (chosenCategory === categories[0]) {
+catagoryName.innerHTML = "The Chosen Category Is Premier League Football Teams";
+} else if (chosenCategory === categories[1]) {
+catagoryName.innerHTML = "The Chosen Category Is Films";
+} else if (chosenCategory === categories[2]) {
+catagoryName.innerHTML = "The Chosen Category Is Cities";
+}
+}
+
+// Create geusses ul
+result = function () {
+wordHolder = document.getElementById('hold');
+correct = document.createElement('ul');
+
+for (var i = 0; i < word.length; i++) {
+correct.setAttribute('id', 'my-word');
+guess = document.createElement('li');
+guess.setAttribute('class', 'guess');
+if (word[i] === "-") {
+  guess.innerHTML = "-";
+  space = 1;
+} else {
+  guess.innerHTML = "_";
+}
+
+geusses.push(guess);
+wordHolder.appendChild(correct);
+correct.appendChild(guess);
+}
+}
+
+// Show lives
+comments = function () {
+showLives.innerHTML = "You have " + lives + " lives";
+if (lives < 1) {
+showLives.innerHTML = "Game Over";
+}
+for (var i = 0; i < geusses.length; i++) {
+if (counter + space === geusses.length) {
+  showLives.innerHTML = "You Win!";
+}
+}
+}
+
+
+// OnClick Function
+check = function () {
+list.onclick = function () {
+var geuss = (this.innerHTML);
+this.setAttribute("class", "active");
+this.onclick = null;
+for (var i = 0; i < word.length; i++) {
+  if (word[i] === geuss) {
+    geusses[i].innerHTML = geuss;
+    counter += 1;
+  }
+}
+var j = (word.indexOf(geuss));
+if (j === -1) {
+  lives -= 1;
+  comments();
+
+} else {
+  comments();
+}
+}
+}
+
+play = function () {
+    categories = [
+        ["everton", "liverpool", "swansea", "chelsea", "hull", "manchester-city", "newcastle-united"],
+        ["alien", "dirty-harry", "gladiator", "finding-nemo", "jaws"],
+        ["manchester", "milan", "madrid", "amsterdam", "prague"]
+    ];
+
+    chosenCategory = categories[Math.floor(Math.random() * categories.length)];
+    word = chosenCategory[Math.floor(Math.random() * chosenCategory.length)];
+    word = word.replace(/\s/g, "-");
+    console.log(word);
+    buttons();
+
+    geusses = [ ];
+    lives = 10;
+    counter = 0;
+    space = 0;
+    result();
+    comments();
+    selectCat();
+
+  }
+
+  play();
+
+  // Hint
+
+    hint.onclick = function() {
+
+      hints = [
+        ["Based in Mersyside", "Based in Mersyside", "First Welsh team to reach the Premier Leauge", "Owned by A russian Billionaire", "Once managed by Phil Brown", "2013 FA Cup runners up", "Gazza's first club"],
+        ["Science-Fiction horror film", "1971 American action film", "Historical drama", "Anamated Fish", "Giant great white shark"],
+        ["Northern city in the UK", "Home of AC and Inter", "Spanish capital", "Netherlands capital", "Czech Republic capital"]
+    ];
+
+    var catagoryIndex = categories.indexOf(chosenCategory);
+    var hintIndex = chosenCategory.indexOf(word);
+    showClue.innerHTML = "Clue: - " +  hints [catagoryIndex][hintIndex];
+  };
+
+   // Reset
+
+  document.getElementById('reset').onclick = function() {
+    correct.parentNode.removeChild(correct);
+    letters.parentNode.removeChild(letters);
+    showClue.innerHTML = "Clue: -  ";
+    play();
+  }
+}
+
+
+
+
+</script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+
+
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+  </body>
+</html>
